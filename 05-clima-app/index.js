@@ -12,7 +12,7 @@ import { Busquedas } from './models/busquedas.js';
 
 const main = async () => {
 
-  const { ciudad, historial } = new Busquedas();
+  const { ciudad, climaLugar, agregarHistorial, historial } = new Busquedas();
   let opt;
 
   console.clear();
@@ -32,25 +32,38 @@ const main = async () => {
 
         // Seleccionar lugares
         const idLugarSeleccionado = await listarLugares(lugares);
-        const lugarSeleccionado = lugares.find(lugar => lugar.id === idLugarSeleccionado);
+        if (idLugarSeleccionado === '0') continue;
 
-        // Datos del clima
+        // el find significa: si el id del lugar seleccionado de la lista es igual a algunos de los id de los lugares que guarde la info en la constante desestructurandolo
+        const { nombre, lng, lat } = lugares.find(lugar => lugar.id === idLugarSeleccionado);
+
+        // guardo en "DB" la ciudad buscada/seleccionada
+        agregarHistorial(nombre);
+
+        // Datos del clima y destructuración
+        const { desc, min, max, temp } = await climaLugar(lng, lat);
 
         // Mostrar resultados
-        console.log('\nInformación de la ciudad\n'.cyan);
-        console.log('Ciudad:', lugarSeleccionado.nombre);
-        console.log('Lat:', lugarSeleccionado.lng);
-        console.log('Lng:', lugarSeleccionado.lat);
-        console.log('Temperatura:',);
-        console.log('Mínima:',);
-        console.log('Máxima:',);
+        console.log('\nInformación del clima de la ciudad:\n'.cyan);
+        console.log('Ciudad:', nombre);
+        console.log('Descripción:', desc);
+        console.log('Lat:', lat);
+        console.log('Lon:', lng);
+        console.log('Temperatura:', temp);
+        console.log('Temp. Mínima:', min);
+        console.log('Temp. Máxima:', max);
 
         break;
 
-      // case 2:
-      //   console.log('Viendo historial')
+      case 2:
+        historial.forEach((lugar, i) => {
 
-      //   break;
+          const idx = `${i + 1}.`.green;
+          console.log(`${idx} ${lugar}`);
+
+        });
+
+        break;
     }
 
     if (opt !== 0) await pausa();
