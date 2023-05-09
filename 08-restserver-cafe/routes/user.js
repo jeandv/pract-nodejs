@@ -2,8 +2,7 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 
 const { validarCampos } = require('../middlewares/validar-campos');
-
-const Role = require('../models/role');
+const { esRoleValido } = require('../helpers/db-validators');
 
 const {
   usuariosGet,
@@ -24,15 +23,7 @@ router.post('/', [
   check('password', 'El password es obligatorio y/o debe de ser mas de 6 letras').isLength({ min: 6 }).not().isEmpty(),
   check('correo', 'Correo no válido').isEmail(),
   // check('rol', 'No es un rol permitido').isIn(['ADMIN_ROLE', 'USER_ROLE']),
-  check('rol').custom(async (rol = '') => {
-
-    const existeRol = await Role.findOne({ rol });
-
-    if (!existeRol) {
-      throw new Error(`El rol ${rol} no esta registrado en la DB`)
-    }
-
-  }),
+  check('rol').custom(esRoleValido),
   validarCampos
 ], usuariosPost);
 
