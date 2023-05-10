@@ -13,13 +13,20 @@ const emailExiste = async (correo = '') => {
 
   const existeEmail = await Usuario.findOne({ correo });
 
-  if (existeEmail) {
-    throw new Error(`El correo: ${correo} ya existe.`)
-  }
+  if (existeEmail) throw new Error(`El correo: ${correo} ya existe.`)
+
+}
+
+const existeUsuarioPorId = async (id) => {
+
+  const existeUsuario = await Usuario.findById(id);
+
+  if (!existeUsuario) throw new Error(`El id: ${id} no existe.`)
 
 }
 
 module.exports = {
   esRoleValido,
-  emailExiste
+  emailExiste,
+  existeUsuarioPorId
 }

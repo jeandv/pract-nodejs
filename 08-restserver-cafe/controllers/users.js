@@ -20,25 +20,33 @@ const usuariosGet = (req, res = response) => {
 
 };
 
-const usuariosPut = (req, res = response) => {
+const usuariosPut = async (req, res = response) => {
 
-  const { nombre, apellido } = req.params;
+  const { id } = req.params;
+  const { _id, password, google, correo, ...resto } = req.body;
+
+  // validar contra base de datos
+  if (password) {
+    // encriptar password
+    const salt = bcrypt.genSaltSync();
+    resto.password = bcrypt.hashSync(password, salt);
+  }
+
+  const usuario = await Usuario.findByIdAndUpdate(id, resto);
 
   res.json({
-    msg: 'put Api',
-    nombre,
-    apellido
+    usuario
   });
 
 };
 
 const usuariosPost = async (req, res = response) => {
 
-//  const errors = validationResult(req);
+  //  const errors = validationResult(req);
 
-//  if (!errors.isEmpty()) {
-//    return res.status(400).json(errors);
-//  }
+  //  if (!errors.isEmpty()) {
+  //    return res.status(400).json(errors);
+  //  }
 
   const { nombre, correo, password, rol } = req.body;
   const usuario = new Usuario({ nombre, correo, password, rol });
