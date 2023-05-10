@@ -5,17 +5,18 @@ const { validationResult } = require('express-validator');
 const Usuario = require('../models/user');
 const { emailExiste } = require('../helpers/db-validators');
 
-const usuariosGet = (req, res = response) => {
+const usuariosGet = async (req = request, res = response) => {
 
-  const { q, nombre, apiKey, page = 1, limit = 5 } = req.query
+  // const { q, nombre, apiKey, page = 1, limit = 5 } = req.query
+
+  const { limite = 5, desde = 0 } = req.query
+
+  const usuarios = await Usuario.find()
+    .skip(Number(desde))
+    .limit(Number(limite));
 
   res.json({
-    msg: 'get Api',
-    q,
-    nombre,
-    apiKey,
-    page,
-    limit
+    usuarios
   });
 
 };
