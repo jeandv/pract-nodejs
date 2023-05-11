@@ -1,21 +1,23 @@
 const { request, response } = require('express');
 const bcrypt = require('bcryptjs');
-const { validationResult } = require('express-validator');
 
 const Usuario = require('../models/user');
-const { emailExiste } = require('../helpers/db-validators');
 
 const usuariosGet = async (req = request, res = response) => {
 
-  // const { q, nombre, apiKey, page = 1, limit = 5 } = req.query
-
   const { limite = 5, desde = 0 } = req.query
 
-  const usuarios = await Usuario.find()
-    .skip(Number(desde))
-    .limit(Number(limite));
+  const query = { estado: true };
+
+  const [total, usuarios] = await Promise.all([
+    Usuario.countDocuments(query),
+    Usuario.find(query)
+      .skip(Number(desde))
+      .limit(Number(limite))
+  ]);
 
   res.json({
+    total,
     usuarios
   });
 
@@ -42,12 +44,6 @@ const usuariosPut = async (req, res = response) => {
 };
 
 const usuariosPost = async (req, res = response) => {
-
-  //  const errors = validationResult(req);
-
-  //  if (!errors.isEmpty()) {
-  //    return res.status(400).json(errors);
-  //  }
 
   const { nombre, correo, password, rol } = req.body;
   const usuario = new Usuario({ nombre, correo, password, rol });
