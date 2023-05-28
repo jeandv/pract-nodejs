@@ -54,6 +54,18 @@ const login = async (req, res = response) => {
 
 }
 
+const googleSignIn = (req, res = response) => {
+
+  const { id_token } = req.body;
+
+  res.json({
+    msg: 'Todo ok',
+    id_token
+  });
+
+}
+
 module.exports = {
-  login
+  login,
+  googleSignIn
 };
