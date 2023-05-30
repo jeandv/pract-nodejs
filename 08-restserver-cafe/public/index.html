@@ -14,13 +14,14 @@
   <hr>
 
   <div id="g_id_onload" data-client_id="1009557710814-k55rg3apqh2nt70q55cnhkhk8k007gpa.apps.googleusercontent.com"
-    data-auto_prompt="false" data-callback="handleCredentialResponse">
+    data-auto_prompt="false" data-auto_select="true" data-callback="handleCredentialResponse">
   </div>
+
   <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with"
     data-shape="rectangular" data-logo_alignment="left">
   </div>
 
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <button id="g_id_signout">Sign Out</button>
 
   <script>
     function handleCredentialResponse(response) {
@@ -39,13 +40,31 @@
       })
         .then(resp => resp.json())
         .then(resp => {
-          console.log(resp)
+
+          console.log(resp);
+
+          localStorage.setItem('email', resp.usuario.correo);
+
         })
         .catch(console.warn);
 
     }
+
+    const button = document.getElementById('g_id_signout');
+    button.onclick = async () => {
+
+      console.log(google.accounts.id)
+      google.accounts.id.disableAutoSelect()
+      google.accounts.id.revoke(localStorage.getItem('email'), done => {
+        console.log('consent revoked');
+        localStorage.clear()
+        location.reload()
+      });
+    }
+
   </script>
 
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </body>
 
 </html>
