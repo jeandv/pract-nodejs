@@ -51,14 +51,21 @@
     }
 
     const button = document.getElementById('g_id_signout');
-    button.onclick = async () => {
 
-      console.log(google.accounts.id)
-      google.accounts.id.disableAutoSelect()
+    button.onclick = () => {
+
+      console.log(google.accounts.id);
+
+      google.accounts.id.disableAutoSelect();
+
       google.accounts.id.revoke(localStorage.getItem('email'), done => {
+
         console.log('consent revoked');
-        localStorage.clear()
-        location.reload()
+
+        localStorage.clear();
+
+        location.reload();
+
       });
     }
 
